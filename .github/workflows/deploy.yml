@@ -1,0 +1,36 @@
+name: Build and Deploy Website
+
+on:
+  push:
+    branches:
+      - main  # triggers whenever you push to the main branch
+    paths:
+      - '.html'
+      - '.css'
+      - '.js'
+      - '.github/workflows/'
+      
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload site files
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './site'  # uploads everything (HTML, CSS, JS, etc.)
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
