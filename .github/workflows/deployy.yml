@@ -1,0 +1,33 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]  # Triggers on pushes to the main branch
+  pull_request:
+    branches: [ main ]  # Optional: Also triggers on PRs for testing
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest  # Uses a free Linux environment
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4  # Pulls your repo code
+
+    - name: Setup Node.js (optional, for any JS processing)
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'  # If you add JS later, this helps
+
+    - name: Install dependencies (if any)
+      run: npm install  # Skip if no package.json; add one if you use tools like Sass
+
+    - name: Build site (if needed)
+      run: npm run build  # Customize if you have a build script; for now, it's a no-op for HTML/CSS
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/main'  # Only deploy from main branch
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}  # Auto-provided by GitHub
+        publish_dir: ./  # Deploys everything in the root folder (your HTML/CSS files)
